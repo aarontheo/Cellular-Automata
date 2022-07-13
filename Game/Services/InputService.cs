@@ -1,8 +1,9 @@
 using System;
 using Raylib_cs;
 using Cellular_Automata.Game.Grid;
+using Cellular_Automata.Game.Grid.Elements;
 
-namespace Cellular_Automata.Game
+namespace Cellular_Automata.Services
 {
     public class InputService
     {
@@ -15,7 +16,17 @@ namespace Cellular_Automata.Game
             keys[2] = down;
             keys[3] = right;
         }
-        //
+        public InputService()
+        {
+            keys = null;
+        }
+        public void AddSandAtCursor(Grid grid,Element element)
+        {
+            var mx = Raylib.GetMouseX();
+            var my = Raylib.GetMouseY();
+            Console.WriteLine($"Attempting to place sand at ({mx}, {my}) in grid with size ({grid.cells.GetLength(0)}, {grid.cells.GetLength(1)})");
+            grid.AddCell(mx, my, element);
+        }
         public Point GetDirection()
         {
             int dx = 0;

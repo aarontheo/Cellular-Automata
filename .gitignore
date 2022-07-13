@@ -1,2 +1,13 @@
 .gitattributes
 obj/
+bin/Debug/net6.0/Cellular-Automata
+bin/Debug/net6.0/Cellular-Automata.deps.json
+bin/Debug/net6.0/Cellular-Automata.dll
+bin/Debug/net6.0/Cellular-Automata.pdb
+bin/Debug/net6.0/Cellular-Automata.runtimeconfig.json
+bin/Debug/net6.0/Raylib-cs.dll
+bin/Debug/net6.0/runtimes/linux-x64/native/libraylib.so
+bin/Debug/net6.0/runtimes/osx-x64/native/libraylib.dylib
+bin/Debug/net6.0/runtimes/win-x64/native/raylib.dll
+bin/Debug/net6.0/runtimes/win-x86/native/raylib.dll
+.DS_Store

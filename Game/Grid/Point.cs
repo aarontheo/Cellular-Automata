@@ -14,8 +14,7 @@ namespace Cellular_Automata.Game.Grid
             this.x = x;
             this.y = y;
         }
-
-        public static Point operator +(Point a,Point b)
+        public static Point operator +(Point a, Point b)
         {
             return new Point(a.x + b.x, a.y + b.y);
         }
@@ -23,7 +22,7 @@ namespace Cellular_Automata.Game.Grid
         {
             return new Point(a.x * b, a.y * b);
         }
-        public static bool operator ==(Point a,Point b)
+        public static bool operator ==(Point a, Point b)
         {
             if (a.x == b.x & a.y == b.y)
             {
@@ -31,9 +30,25 @@ namespace Cellular_Automata.Game.Grid
             }
             return false;
         }
-        public static bool operator !=(Point a,Point b)
+        public static bool operator !=(Point a, Point b)
         {
             return !(a == b);
+        }
+        public static bool operator <(Point a, Point b)
+        {
+            return a.x < b.x & a.y <= b.y;
+        }
+        public static bool operator <=(Point a, Point b)
+        {
+            return a < b || a == b;
+        }
+        public static bool operator >(Point a, Point b)
+        {
+            return a.x > b.x & a.y >= b.y;
+        }
+        public static bool operator >=(Point a, Point b)
+        {
+            return a > b || a == b;
         }
     }
 }
