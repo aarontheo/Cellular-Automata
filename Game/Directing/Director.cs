@@ -15,8 +15,8 @@ namespace Cellular_Automata.Game.Directing
         public int maxCursorSize;
         private Color cursorColor = new Color(150,150,150,100);
         public int selectedElement;
-        public Element[] elementTypes = { new Sand(), new Water(), new Wall(), null };
-        public string[] elementNames = { "SAND", "WATER", "WALL", "ERASE"};
+        public Element[] elementTypes = { new Sand(), new Water(), new Wall()};
+        public string[] elementNames = { "SAND", "WATER", "WALL"};
         public Director(VideoService videoService)
         {
             this.videoService = videoService;
@@ -34,7 +34,7 @@ namespace Cellular_Automata.Game.Directing
                 }
                 if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_RIGHT))
                 {
-                    grid.RemoveCells(inputService.GetMousePos(grid),CursorSize);
+                    grid.AddCells(inputService.GetMousePos(grid), CursorSize, null);
                 }
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
                 {
@@ -49,6 +49,21 @@ namespace Cellular_Automata.Game.Directing
                 }
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_RIGHT_BRACKET) & selectedElement < elementTypes.Length-1){
                     selectedElement++;
+                }
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_V)){
+                    grid.SwitchMode();
+                }
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE))
+                {
+                    selectedElement = 0;
+                }
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO))
+                {
+                    selectedElement = 1;
+                }
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE))
+                {
+                    selectedElement = 2;
                 }
                 //Console.WriteLine(inputService.GetMouseWheelMove());
                 CursorSize = Math.Max(1,CursorSize + inputService.GetMouseWheelMove()/2);

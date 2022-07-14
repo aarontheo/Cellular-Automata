@@ -3,6 +3,9 @@ using Cellular_Automata.Game.Grid.Elements;
 
 namespace Cellular_Automata.Game.Grid
 {
+    public enum DrawMode{
+        PIXELS, CIRCLES, NULL
+    }
     /// <summary>
     /// A Grid is a collection of objects stored in a 2d array 
     /// </summary>
@@ -17,6 +20,7 @@ namespace Cellular_Automata.Game.Grid
         protected List<Move> changes = new List<Move>();
         private List<Move> options = new List<Move>();
         private static Random rng = new Random(8);
+        private DrawMode drawMode = DrawMode.PIXELS;
         public bool wraparound;
         public Grid(int width, int height, int cellSize, bool wraparound = false)
         {
@@ -62,14 +66,29 @@ namespace Cellular_Automata.Game.Grid
                     var cell = cells[x, y];
                     if (cell != null)
                     {
-                        //Raylib.DrawPixel(x, y, cell.color);
-                        //Raylib.DrawRectangle(x * cellSize, y * cellSize, cellSize, cellSize, cell.color);
-                        Raylib.DrawCircle(x * cellSize, y * cellSize, cellSize+1, cell.color);
+                        switch (drawMode)
+                        {
+                            case DrawMode.PIXELS:
+                                Raylib.DrawRectangle(x * cellSize, y * cellSize, cellSize, cellSize, cell.color);
+                                break;
+                            case DrawMode.CIRCLES:
+                                Raylib.DrawCircle(x * cellSize, y * cellSize, cellSize + 1, cell.color);
+                                break;
+
+                        };
                     }
                 }
             }
             //Raylib.EndTextureMode();
             //Raylib.DrawTextureEx(canvas.texture, new System.Numerics.Vector2(0, 0), 0, 1, Color.GREEN);
+        }
+        public void SwitchMode()
+        {
+            drawMode++;
+            if (drawMode == DrawMode.NULL)
+            {
+                drawMode = DrawMode.PIXELS;
+            }
         }
         public bool isEmpty(int x, int y)
         {
