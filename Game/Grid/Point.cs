@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace Cellular_Automata.Game.Grid
 {
@@ -14,9 +15,18 @@ namespace Cellular_Automata.Game.Grid
             this.x = x;
             this.y = y;
         }
+        public Point(Vector2 vect)
+        {
+            this.x = (int)vect.X;
+            this.y = (int)vect.Y;
+        }
         public static Point operator +(Point a, Point b)
         {
             return new Point(a.x + b.x, a.y + b.y);
+        }
+        public static Point operator -(Point a,Point b)
+        {
+            return new Point(a.x - b.x, a.y - b.y);
         }
         public static Point operator *(Point a, int b)
         {

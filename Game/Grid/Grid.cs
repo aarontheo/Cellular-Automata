@@ -12,16 +12,19 @@ namespace Cellular_Automata.Game.Grid
         public int width { get; }
         public int height { get; }
         public Element[,] cells;
+        //public List<Element> celllist = new List<Element>();
         public int cellSize { get; }
-        private RenderTexture2D canvas = new RenderTexture2D();
         protected List<Move> changes = new List<Move>();
         private List<Move> options = new List<Move>();
-        private static Random rng = new Random();
-        public Grid(int width, int height, int cellSize)
+        private static Random rng = new Random(8);
+        public bool wraparound;
+        public Grid(int width, int height, int cellSize, bool wraparound = false)
         {
-            this.width = width;
-            this.height = height;
-            cells = new Element[width, height];
+            this.wraparound = wraparound;
+            this.cellSize = cellSize;
+            this.width = width / cellSize;
+            this.height = height / cellSize + 1;
+            cells = new Element[this.width, this.height];
         }
         public void Update()
         {
@@ -34,8 +37,14 @@ namespace Cellular_Automata.Game.Grid
                     Element cell = cells[x, y];
                     if (cell != null)
                     {
-                        //Console.WriteLine("Updating");
-                        cells[x, y].Update(this,x,y);
+                        if (y >= height - 1 & !wraparound)
+                        {
+                            RemoveCell(x, y);
+                        }
+                        else
+                        {
+                            cells[x, y].Update(this, x, y);
+                        }
                     }
                 }
             }
@@ -45,6 +54,7 @@ namespace Cellular_Automata.Game.Grid
         {
             //Raylib.BeginTextureMode(canvas);
             //Raylib.ClearBackground(Color.BLANK);
+            //Raylib.DrawRectangle(40, 50, 40, 40, Color.BLUE);
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -52,8 +62,9 @@ namespace Cellular_Automata.Game.Grid
                     var cell = cells[x, y];
                     if (cell != null)
                     {
-                        Raylib.DrawPixel(x, y, cell.color);
-                        //Raylib.DrawRectangle(x, y, 10, 10, cell.color);
+                        //Raylib.DrawPixel(x, y, cell.color);
+                        //Raylib.DrawRectangle(x * cellSize, y * cellSize, cellSize, cellSize, cell.color);
+                        Raylib.DrawCircle(x * cellSize, y * cellSize, cellSize+1, cell.color);
                     }
                 }
             }
@@ -64,56 +75,100 @@ namespace Cellular_Automata.Game.Grid
         {
             return cells[WrapInt(x, width), WrapInt(y, height)] == null;
         }
-        public Element getCell(int x,int y)
+        public bool isEmpty(Point pos)
         {
-            return cells[WrapInt(x,width),WrapInt(y,height)];
+            return isEmpty(pos.x, pos.y);
+        }
+        public Element getCell(int x, int y)
+        {
+            return cells[WrapInt(x, width), WrapInt(y, height)];
+        }
+        public Element getCell(Point pos)
+        {
+            return getCell(pos.x, pos.y);
         }
         public void setCell(int x, int y, Element cell)
         {
             cells[WrapInt(x, width), WrapInt(y, height)] = cell;
         }
+        public void setCell(Point pos, Element cell)
+        {
+            setCell(pos.x, pos.y, cell);
+        }
         public void AddCell(int x, int y, Element cell)
         {
-            if (isEmpty(x,y))
+            if (isEmpty(x, y))
             {
                 setCell(x, y, cell);
             }
+            if (cell == null)
+            {
+                RemoveCell(x, y);
+            }
         }
-        public void MakeMove(int x, int y,int toX, int toY)
+        public void AddCell(Point pos, Element cell)
+        {
+            AddCell(pos.x, pos.y, cell);
+        }
+        public void RemoveCell(int x, int y)
+        {
+            setCell(x, y, null);
+        }
+        public void RemoveCell(Point pos)
+        {
+            RemoveCell(pos.x, pos.y);
+        }
+        public void SwapCells(int x1, int y1, int x2, int y2)
+        {
+            var temp = getCell(x1, y1);
+            setCell(x1, y1, getCell(x2, y2));
+            setCell(x2, y2, temp);
+        }
+        public void SwapCells(Point pos1, Point pos2)
+        {
+            SwapCells(pos1.x, pos1.y, pos2.x, pos2.y);
+        }
+        public void AddCells(Point pos, int radius, Element cell)
+        {
+            for (int x = 0; x < radius; x++)
+            {
+                for (int y = 0; y < radius; y++)
+                {
+                    AddCell(pos.x - radius/2 + x, pos.y - radius/2 + y, cell);
+                }
+            }
+        }
+        public void RemoveCells(Point pos, int size)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    RemoveCell(pos.x - x / 2, pos.y - y / 2);
+                }
+            }
+        }
+        public void MakeMove(int x, int y, int toX, int toY)
         {
             changes.Add(new Move(x, y, toX, toY));
         }
         private void CommitCells()
         {
-            foreach (Move move in changes) //remove any moves trying to write to a filled position
+            if (changes.Count == 0)
             {
-                if (cells[move.to.x, move.to.y] != null)
-                {
-                    changes.Remove(move);
-                }
+                return;
             }
-            changes.OrderBy(o=>(o.to.x*width+o.to.y));
-            Console.WriteLine("Moves:"+changes.Count);
-            foreach(Move m in changes)
-            {
-                Console.WriteLine(m.to.x);
-            }
-            //pick the changes to keep
-            //options is an array to keep track of
-            //Console.WriteLine(options.Count);
+            changes = changes.OrderBy(o => (o.to.x * width + o.to.y)).ToList<Move>();
             for (int i = 0; i < changes.Count; i++)
             {
-                if (i == 0 || changes[i - 1].to == changes[i].to)
-                {
-                    //add the current Moves that have the same destination to the options list
-                    options.Add(changes[i]);
-                    //Console.WriteLine("options has: "+options.Count);
-                } else { //pick from all the moves in the current option
-                    Move move = options[rng.Next(options.Count)];
-                    Console.WriteLine($"options contains {options.Count} elements.");
-                    //Move move = options[0];
-                    cells[move.to.x, move.to.y] = cells[move.from.x, move.from.y];
-                    cells[move.from.x, move.to.y] = null;
+                Move move = changes[i];
+                options.Add(move);
+                if (i == changes.Count - 1 || changes[i + 1].to != move.to) //if the move has a different destination from the next
+                { //maybe you could turn options into a list of lists, and deal with all option sets at once?
+                    move = options[rng.Next(options.Count)];
+                    // setCell(move.to, getCell(move.from));
+                    // RemoveCell(move.from);
+                    SwapCells(move.to, move.from);
                     options.Clear();
                 }
             }
@@ -122,6 +177,22 @@ namespace Cellular_Automata.Game.Grid
         private int WrapInt(int a, int max)
         {
             return ((a % max) + max) % max;
+        }
+    }
+    public class Move
+    {
+        public Point from { get; }
+        public Point to { get; }
+
+        public Move(Point from, Point to)
+        {
+            this.from = from;
+            this.to = to;
+        }
+        public Move(int x, int y, int xto, int yto)
+        {
+            this.from = new Point(x, y);
+            this.to = new Point(xto, yto);
         }
     }
 }

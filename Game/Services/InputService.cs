@@ -20,13 +20,23 @@ namespace Cellular_Automata.Services
         {
             keys = null;
         }
-        public void AddSandAtCursor(Grid grid,Element element)
+        public Point GetMousePos(Grid grid)
         {
-            var mx = Raylib.GetMouseX();
-            var my = Raylib.GetMouseY();
-            Console.WriteLine($"Attempting to place sand at ({mx}, {my}) in grid with size ({grid.cells.GetLength(0)}, {grid.cells.GetLength(1)})");
-            grid.AddCell(mx, my, element);
+            return new Point(Raylib.GetMouseX()/grid.cellSize,Raylib.GetMouseY()/grid.cellSize);
         }
+        public Point GetMouseDelta(Grid grid)
+        {
+
+            return new Point(Raylib.GetMouseDelta()) * grid.cellSize;
+        }
+        public int GetMouseWheelMove()
+        {
+            return (int)Raylib.GetMouseWheelMove();
+        }
+        // public sbyte GetMouseDirection()
+        // {
+        //     return ((sbyte)GetMouseWheelMove());
+        // }
         public Point GetDirection()
         {
             int dx = 0;

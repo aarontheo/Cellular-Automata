@@ -3,11 +3,11 @@ using Raylib_cs;
 
 namespace Cellular_Automata.Game.Grid.Elements
 {
-    public class Sand : DynamicSolid
+    public class Water : Liquid
     {
-        public Sand()
+        public Water()
         {
-            this.color = Color.BEIGE;
+            this.color = Color.BLUE;
         }
     }
 }

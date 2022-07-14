@@ -15,13 +15,13 @@ namespace Cellular_Automata.Game.Grid.Elements
             }
             else
             {
-                if (rng.Next(1) == 0)
+                if (rng.Next(2) == 0 & grid.isEmpty(x - 1, y + 1) & grid.isEmpty(x - 1, y))
                 {
                     grid.MakeMove(x, y, x - 1, y + 1);
                     // grid.setCell(x - 1, y + 1, this);
                     // grid.setCell(x, y, null);
                 }
-                else
+                else if (grid.isEmpty(x + 1, y + 1) & grid.isEmpty(x + 1, y))
                 {
                     grid.MakeMove(x, y, x + 1, y + 1);
                     // grid.setCell(x + 1, y + 1, this);
