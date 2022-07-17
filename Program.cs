@@ -5,7 +5,7 @@ using Raylib_cs;
 
 int width = 800;
 int height = 600;
-int cellSize = 3;
+int cellSize = 2;
 int FPS = 60;
 Color bgColor = Color.BLACK;
 string title = "Sand";

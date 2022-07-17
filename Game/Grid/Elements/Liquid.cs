@@ -23,14 +23,6 @@ namespace Cellular_Automata.Game.Grid.Elements
                 {
                     grid.MakeMove(x, y, x + 1, y);
                 }
-                else
-                {
-                    //swap places with dynamic solids above so it 'sinks'
-                    if (grid.getCell(x, y - 1) is DynamicSolid)
-                    {
-                        grid.MakeMove(x, y, x, y - 1);
-                    }
-                }
             }
         }
     }

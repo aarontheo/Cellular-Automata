@@ -11,7 +11,7 @@ namespace Cellular_Automata.Game.Directing
         private VideoService videoService;
         private InputService inputService;
         private bool isRunning = false;
-        public int CursorSize = 1;
+        public int CursorSize = 3;
         public int maxCursorSize;
         private Color cursorColor = new Color(150,150,150,100);
         public int selectedElement;
@@ -30,7 +30,14 @@ namespace Cellular_Automata.Game.Directing
             {
                 if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
                 {
-                    grid.AddCells(inputService.GetMousePos(grid), CursorSize, elementTypes[selectedElement]);
+                    // if (elementTypes[selectedElement] is ISpecial)
+                    // {
+                    //     Console.WriteLine("ISpecial!");
+                    //     Type type = elementTypes[selectedElement].GetType();
+                    //     grid.AddCells(inputService.GetMousePos(grid), CursorSize, type);
+                    // }else{
+                        grid.AddCells(inputService.GetMousePos(grid), CursorSize, elementTypes[selectedElement]);
+                    //}
                 }
                 if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_RIGHT))
                 {

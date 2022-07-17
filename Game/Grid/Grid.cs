@@ -1,5 +1,6 @@
 using Raylib_cs;
 using Cellular_Automata.Game.Grid.Elements;
+using System;
 
 namespace Cellular_Automata.Game.Grid
 {
@@ -89,7 +90,7 @@ namespace Cellular_Automata.Game.Grid
             {
                 drawMode = DrawMode.PIXELS;
             }
-        }
+        } //there's a lot of functions here lol
         public bool isEmpty(int x, int y)
         {
             return cells[WrapInt(x, width), WrapInt(y, height)] == null;
@@ -97,6 +98,10 @@ namespace Cellular_Automata.Game.Grid
         public bool isEmpty(Point pos)
         {
             return isEmpty(pos.x, pos.y);
+        }
+        public bool isSolid(int x, int y)
+        {
+            return getCell(x, y) is Solid;
         }
         public Element getCell(int x, int y)
         {
@@ -154,6 +159,16 @@ namespace Cellular_Automata.Game.Grid
                 for (int y = 0; y < radius; y++)
                 {
                     AddCell(pos.x - radius/2 + x, pos.y - radius/2 + y, cell);
+                }
+            }
+        }
+        public void AddCells(Point pos, int radius, Element type, bool isSpecial)
+        {
+            for (int x = 0; x < radius; x++)
+            {
+                for (int y = 0; y < radius; y++)
+                {
+                    //AddCell(pos.x - radius/2 + x, pos.y - radius/2 + y, Activator.CreateInstance(null,type.GetType()));
                 }
             }
         }
